@@ -126,7 +126,6 @@ Peer::SendInterest()
 	  interestName->append(temp_comp.str());
 	  m_seq++;
 
-	  std::cout<< " SendInterest() is working";
 	  shared_ptr<Interest> interest = make_shared<Interest>();
 	  interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
 	  interest->setName(*interestName);
@@ -141,9 +140,9 @@ Peer::SendInterest()
 	  m_appLink->onReceiveInterest(*interest);
 
 
-	  ScheduleNextPacket();
+	  //ScheduleNextPacket();
 }
-
+/*
 void
 Peer::ScheduleNextPacket()
 {
@@ -151,7 +150,7 @@ Peer::ScheduleNextPacket()
 	  if (!m_sendEvent.IsRunning())
 	      m_sendEvent = Simulator::Schedule(Seconds(1.0),&Peer::SendInterest, this);
 }
-
+*/
 void
 Peer::OnInterest(shared_ptr<const Interest> interest)
 {
@@ -163,7 +162,6 @@ Peer::OnInterest(shared_ptr<const Interest> interest)
   if (!m_active)
     return;
 
-  std::cout<< " OnInterest() is working\n";
   Name dataName(interest->getName());
   // dataName.append(m_postfix);
   // dataName.appendVersion();
@@ -205,7 +203,6 @@ Peer::OnData(shared_ptr<const Data> data)
 
   App::OnData(data); // tracing inside
 
-  std::cout<< " OnData() is working";
   NS_LOG_FUNCTION(this << data);
 
   // NS_LOG_INFO ("Received content object: " << boost::cref(*data));
@@ -220,29 +217,7 @@ Peer::OnData(shared_ptr<const Data> data)
     hopCount = *hopCountTag;
   }
   NS_LOG_DEBUG("Hop count: " << hopCount);
-
-
-  /*
-  SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
-  if (entry != m_seqLastDelay.end()) {
-    m_lastRetransmittedInterestDataDelay(this, seq, Simulator::Now() - entry->time, hopCount);
-  }
-
-  entry = m_seqFullDelay.find(seq);
-  if (entry != m_seqFullDelay.end()) {
-    m_firstInterestDataDelay(this, seq, Simulator::Now() - entry->time, m_seqRetxCounts[seq], hopCount);
-  }
-
-  m_seqRetxCounts.erase(seq);
-  m_seqFullDelay.erase(seq);
-  m_seqLastDelay.erase(seq);
-
-  m_seqTimeouts.erase(seq);
-  m_retxSeqs.erase(seq);
-
-  m_rtt->AckSeq(SequenceNumber32(seq));
-
-  */
+	
 }
 
 } // namespace ndn
